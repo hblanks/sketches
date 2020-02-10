@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  postgres:
+    image: postgres:11.2-alpine
+    ports:
+      - 127.0.0.1:5432:5432
+    environment:
+      POSTGRES_DB: sketch
+      POSTGRES_PASSWORD: development
+    volumes:
+      - ./:/docker-entrypoint-initdb.d
+
