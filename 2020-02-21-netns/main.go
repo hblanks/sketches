@@ -111,31 +111,33 @@ func createNamespace(name string) (*os.File, error) {
 	// 	unshare(CLONE_NEWNET)                   = 0
 	// 	mount("/proc/self/ns/net", "/var/run/netns/ns0", 0x56177d0e29a5, MS_BIND, NULL) = 0
 	log.Printf("createNamespace")
-	f, err := unshare()
+	origF, err := unshare()
 	if err != nil {
 		return nil, err
 	}
 
 	if err := mountNamespaceDir(); err != nil {
-		closeFile(f)
+		closeFile(origF)
 		return nil, err
 	}
 
 	nsPath := filepath.Join(nsDir, name)
-	f, err = os.Create(nsPath)
+	f, err := os.Create(nsPath)
 	if err != nil {
+		closeFile(origF)
 		return nil, err
 	}
 	if f.Close(); err != nil {
+		closeFile(origF)
 		return nil, err
 	}
 
 	err = syscall.Mount("/proc/self/ns/net", nsPath, "", syscall.MS_BIND, "")
 	if err != nil {
-		closeFile(f)
+		closeFile(origF)
 		return nil, err
 	}
-	return f, nil
+	return origF, nil
 }
 
 // Sets namespace to /var/run/netns/${name}, creating
@@ -192,7 +194,9 @@ func main() {
 	flag.Usage = func() {
 		fmt.Fprintf(
 			flag.CommandLine.Output(),
-			"Usage: %s NAMESPACE COMMAND ARG...\n",
+			"Usage: %s NAMESPACE COMMAND ARG...\n"+
+				"Runs COMMAND in the given named network NAMESPACE,\n"+
+				"creating the namespace if it doesn't already exist.\n",
 			os.Args[0])
 		flag.PrintDefaults()
 	}
