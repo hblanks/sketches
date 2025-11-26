@@ -1,0 +1,5 @@
+#!/usr/bin/execlineb -P
+
+s6-setuidgid nobody
+env LISTEN_ADDR="0.0.0.0:7777"
+/usr/local/bin/shelly-listen

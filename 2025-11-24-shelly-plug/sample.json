@@ -1,0 +1,22 @@
+{
+  "src": "shellyplugus-ece3345e2b30",
+  "dst": "*",
+  "method": "NotifyStatus",
+  "params": {
+    "ts": 1764029520.00,
+    "switch:0": {
+      "aenergy": {
+        "by_minute": [
+          2710.126,
+          2732.523,
+          0.000
+        ],
+        "minute_ts": 1764029520,
+        "total": 43.169
+      },
+      "apower": 156.9,
+      "current": 2.082,
+      "voltage": 122.5
+    }
+  }
+}

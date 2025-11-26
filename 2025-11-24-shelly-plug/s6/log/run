@@ -1,0 +1,5 @@
+#!/usr/bin/execlineb -P
+
+define LOG_DIR /tmp/log/shelly-listen
+s6-setuidgid nobody
+s6-log T s1048576 n10 !"bzip2 -9" ${LOG_DIR}
